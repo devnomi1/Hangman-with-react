@@ -5,7 +5,7 @@ import Popup from "./components/Popup";
 import Word from "./components/Word";
 import WrongLetters from "./components/WrongLetters";
 import Notification from "./components/Notification";
-import { showNotification as show} from "./helpers/helpers";
+import { showNotification as show } from "./helpers/helpers";
 
 const words = ["application", "programming", "interface", "wizard"];
 let selectedWord = words[Math.floor(Math.random() * words.length)];
@@ -27,31 +27,45 @@ function App() {
 					if (!correctLetters.includes(letter)) {
 						setCorrectLetters((currentLetters) => [...currentLetters, letter]);
 					} else {
-						show(setShowNotification)
+						show(setShowNotification);
 					}
 				} else {
 					if (!wrongLetters.includes(letter)) {
 						setWrongLetters((wrongLetters) => [...wrongLetters, letter]);
 					} else {
-						show(setShowNotification)
+						show(setShowNotification);
 					}
 				}
 			}
 		};
-		window.addEventListener('keydown', handleKeyDown)
-		return () => window.removeEventListener("keydown", handleKeyDown)
-	}, [correctLetters, wrongLetters , playable]);
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
+	}, [correctLetters, wrongLetters, playable]);
+
+	function playAgain() {
+		setPlayable(true);
+		setCorrectLetters([]);
+		setWrongLetters([]);
+		const random = Math.floor(Math.random() * words.length);
+		selectedWord = words[random]
+	}
 
 	return (
 		<>
 			<Header />
 			<div className="game-container">
-				<Figure wrongLetters={ wrongLetters}/>
+				<Figure wrongLetters={wrongLetters} />
 				<WrongLetters wrongLetters={wrongLetters} />
 				<Word correctLetters={correctLetters} selectedWord={selectedWord} />
 			</div>
-				<Popup />
-				<Notification showNotification={showNotification} />
+			<Popup
+				correctLetters={correctLetters}
+				wrongLetters={wrongLetters}
+				selectedWord={selectedWord}
+				setPlayable={setPlayable}
+				playAgain={playAgain}
+			/>
+			<Notification showNotification={showNotification} />
 		</>
 	);
 }
